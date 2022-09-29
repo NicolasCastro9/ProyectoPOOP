@@ -1,0 +1,19 @@
+#BlueJ class context
+comment0.target=Route
+comment0.text=\r\n\ Clase\ que\ crea\ la\ ruta\r\n\ \r\n\ @author\ (Nicol\u00E1s\ Castro\ Jaramillo\ y\ Marco\ Antonio\ Alvarez)\ \r\n\ @version\ \ 2.0\ (29/09/2022)\r\n
+comment1.params=locationA\ x1\ y1\ locationB\ x2\ y2
+comment1.target=Route(java.lang.String,\ int,\ int,\ java.lang.String,\ int,\ int)
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Road\r\n
+comment2.params=
+comment2.target=void\ drawRoute()
+comment2.text=\r\n\ Metodo\ que\ dibuja\ la\ ruta\ en\ el\ canvas\r\n
+comment3.params=
+comment3.target=void\ removeRoute()
+comment3.text=\r\n\ Metodo\ que\ borra\ la\ ruta\ en\ el\ canvas\r\n
+comment4.params=
+comment4.target=void\ makeVisible()
+comment4.text=\r\n\ Metodo\ que\ hace\ visible\ a\ la\ ruta\r\n
+comment5.params=
+comment5.target=void\ makeInvisible()
+comment5.text=\r\n\ Metodo\ que\ hace\ invisible\ a\ la\ ruta\r\n
+numComments=6

@@ -1,0 +1,23 @@
+#BlueJ class context
+comment0.target=Sign
+comment0.text=\r\n\ Clase\ que\ crea\ el\ Sign\r\n\ \r\n\ @author\ (Nicol\u00E1s\ Castro\ Jaramillo\ y\ Marco\ Antonio\ Alvarez)\ \r\n\ @version\ \ 2.0\ (29/09/2022)\r\n
+comment1.params=locationA\ x1\ y1\ locationB\ x2\ y2\ speedlimit1
+comment1.target=Sign(java.lang.String,\ int,\ int,\ java.lang.String,\ int,\ int,\ int)
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Sign\r\n
+comment2.params=
+comment2.target=void\ drawSign()
+comment2.text=\r\n\ Metodo\ que\ dibuja\ el\ objeto\ de\ la\ clase\ Sign\r\n
+comment3.params=
+comment3.target=void\ removeSign()
+comment3.text=\r\n\ Metodo\ que\ borra\ el\ objeto\ Sign\ del\ canvas.\r\n
+comment4.params=
+comment4.target=void\ makeVisible()
+comment4.text=\r\n\ Metodo\ que\ hace\ visible\ el\ objeto\ Sign\ en\ el\ canvas.\r\n
+comment5.params=
+comment5.target=void\ makeInvisible()
+comment5.text=\r\n\ Metodo\ que\ hace\ invisible\ el\ objeto\ Sign\ en\ el\ canvas.\r\n
+comment6.params=newColor
+comment6.target=void\ changeColor(java.lang.String)
+comment7.params=speedlimit
+comment7.target=void\ changeColorRange(int)
+numComments=8

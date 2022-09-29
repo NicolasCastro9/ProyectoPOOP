@@ -1,0 +1,19 @@
+#BlueJ class context
+comment0.target=Lineas
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Lineas\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=
+comment1.target=Lineas()
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Lineas\r\n
+comment2.params=
+comment2.target=void\ makeVisible()
+comment2.text=\r\n\ Make\ this\ triangle\ visible.\ If\ it\ was\ already\ visible,\ do\ nothing.\r\n
+comment3.params=
+comment3.target=void\ makeInvisible()
+comment3.text=\r\n\ Make\ this\ triangle\ invisible.\ If\ it\ was\ already\ invisible,\ do\ nothing.\r\n
+comment4.params=
+comment4.target=void\ draw()
+comment5.params=
+comment5.target=void\ erase()
+comment6.params=nx1\ ny1\ nx2\ ny2
+comment6.target=void\ changePosition(int,\ int,\ int,\ int)
+numComments=7
