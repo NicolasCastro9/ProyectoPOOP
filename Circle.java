@@ -41,7 +41,7 @@ public class Circle{
         isVisible = false;
     }
 
-    private void draw(){
+    public void draw(){
         if(isVisible) {
             Canvas canvas = Canvas.getCanvas(length, width);
             canvas.draw(this, color, 

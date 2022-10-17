@@ -16,4 +16,6 @@ comment5.params=
 comment5.target=void\ erase()
 comment6.params=nx1\ ny1\ nx2\ ny2
 comment6.target=void\ changePosition(int,\ int,\ int,\ int)
-numComments=7
+comment7.params=newColor
+comment7.target=void\ changeColor(java.lang.String)
+numComments=8

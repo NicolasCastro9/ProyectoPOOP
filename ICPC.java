@@ -17,14 +17,18 @@ public class ICPC{
     private int width;
     private boolean ok;
     private boolean isVisible;
-    private HashMap <String,Intersection> intersections; //Hashmap con las intersecciones
-    private HashMap <String,Route> routes; //Hashmap con las rutas
-    private HashMap <String,Sign> signs; //Hashmap con las señales
-    private HashMap<String,Integer> signsSpeedLimit; // Hashmap con las velocidades de las señales
-    private HashMap<Integer,String> colores; //Hashmap de los colores de las intersecciones
-    private HashMap<String,Integer> routesSpeedLimit; //Hashmap de las velocidades que tienen las rutas
-    private int[][] mRoutesSpeedLimit; //matriz del ejercicio
-    private int costoSeñales;
+    public HashMap <String,Intersection> intersections; //Hashmap con las intersecciones
+    public HashMap <String,Route> routes; //Hashmap con las rutas
+    public HashMap <String,Sign> signs; //Hashmap con las señales
+    public HashMap <String,Integer> signsSpeedLimit; // Hashmap con las velocidades de las señales
+    public HashMap <Integer,String> colores; //Hashmap de los colores de las intersecciones
+    public HashMap <String,Integer> routesSpeedLimit; //Hashmap de las velocidades que tienen las rutas
+    public HashMap <String,Sign> wrongSigns;
+    public HashMap <String,Integer> wrongSignsSpeedLimit;
+    public HashMap <String,Sign> innSigns;
+    public HashMap <String,Integer> innSignsSpeedLimit;
+    public int[][] mRoutesSpeedLimit; //matriz del ejercicio
+    public int costoSeñales;
     /**
      * Constructor for objects of class ICPC
      */
@@ -34,16 +38,20 @@ public class ICPC{
             JOptionPane.showMessageDialog(null, "no se admiten numeros negativos"); //no permite que los valores ingresados sean negativos
         }else{
             Canvas canvas = Canvas.getCanvas(length, width);
-            canvas.setVisible(true);
+            canvas.setVisible(false);
             intersections = new HashMap<String,Intersection>();
             routes = new HashMap<String,Route>();
             signs = new HashMap<String,Sign>();
             signsSpeedLimit = new HashMap<String,Integer>();
             colores = new HashMap<Integer,String>();
             routesSpeedLimit = new HashMap<String,Integer>();
+            wrongSigns = new HashMap<String,Sign>();
+            wrongSignsSpeedLimit = new HashMap <String,Integer>();
+            innSigns = new HashMap<String,Sign>();
+            innSignsSpeedLimit = new HashMap <String,Integer>();
             mRoutesSpeedLimit = new int [3][];
-            ok = false;
-            isVisible = true;            
+            ok = true;
+            isVisible = false;            
         }
     }
     /**
@@ -97,7 +105,6 @@ public class ICPC{
             ok = false;
         }else{
             Intersection inter = new Intersection(color,x,y);
-            inter.makeVisible();
             intersections.put(color,inter);
             ok = true;
         }
@@ -112,14 +119,12 @@ public class ICPC{
         if(routes.containsKey(keyRoad) == true){
             JOptionPane.showMessageDialog(null, "ruta ya existe"); //si ya existe una ruta con el color mandara el mensaje
             ok = false;            
+        }else if(interA == interB){
+            JOptionPane.showMessageDialog(null, "no se puede generar ruta"); //no se puede generar ruta donde las dos intersecciones es el mismo
+            ok = false;
         }else{
             if(intersections.containsKey(interA) == true && intersections.containsKey(interB) == true){
                 Route route = new Route (intersections.get(interA).color,intersections.get(interA).x,intersections.get(interA).y,intersections.get(interB).color,intersections.get(interB).x,intersections.get(interB).y);
-                route.makeVisible();
-                intersections.get(interA).makeInvisible();
-                intersections.get(interB).makeInvisible();        
-                intersections.get(interA).makeVisible();
-                intersections.get(interB).makeVisible();
                 routes.put(keyRoad,route);
                 ok = true;
             }else{
@@ -158,16 +163,19 @@ public class ICPC{
         }else{
             if(routes.containsKey(keyRoad) == true){
                 Sign sign = new Sign(intersections.get(interA).color,intersections.get(interA).x,intersections.get(interA).y,intersections.get(interB).color,intersections.get(interB).x,intersections.get(interB).y,speedlimit);
-                sign.makeVisible();
                 sign.changeColorRange(speedlimit); //la señal cambiara en un tono de grises dependiendo del valor
                 signs.put(keyRoad,sign);
                 signsSpeedLimit.put(keyRoad,speedlimit);
                 if(speedlimit > routesSpeedLimit.get(keyRoad)){
                     sign.changeColor("magenta"); //si es una señal erronea sera de color magenta
+                    wrongSignsSpeedLimit.put(keyRoad,speedlimit);
+                    wrongSigns.put(keyRoad,sign);
                 }
                 for(String s : intersections.keySet()){
                     if(signs.containsKey(s + " " + interA)){
                         sign.changeColor("green"); // si la señal es innecesaria sera de color verde
+                        innSignsSpeedLimit.put(keyRoad,speedlimit);
+                        innSigns.put(keyRoad,sign);
                     }
                 }
                 ok = true;
@@ -184,10 +192,14 @@ public class ICPC{
     public void delIntersection(String color){
         if(intersections.containsKey(color) == true){
             for(String s : intersections.keySet()){
-                delRoad(color,s);
-                delRoad(s,color);
+                if(routes.containsKey(color + " " + s)){
+                    delRoad(color,s);
+                }
+                if(routes.containsKey(s + " " + color)){
+                    delRoad(s,color);
+                }                
             }
-            intersections.get(color).makeInvisible();
+            intersections.get(color).removeIntersection();
             intersections.remove(color);
             ok = true;
         }else{
@@ -203,9 +215,12 @@ public class ICPC{
     public void delRoad(String locationA, String locationB){
         String code = locationA + " " + locationB;        
         if(routes.containsKey(code) == true){
-            routes.get(code).makeInvisible();
+            if(signs.containsKey(code)){
+                removeSign(locationA,locationB);
+            }
+            routes.get(code).removeRoute();
+            signsSpeedLimit.remove(code);
             routes.remove(code);
-            removeSign(locationA,locationB);
             ok = true;
         }else{
             JOptionPane.showMessageDialog(null, "No existe la ruta"); //si no existe la ruta a eliminar mandara el mensaje
@@ -221,9 +236,17 @@ public class ICPC{
         String code = interA + " " + interB;
         if(signs.containsKey(code) == true ){
             signsSpeedLimit.remove(signs.get(code));
-            signs.get(code).makeInvisible();
+            signs.get(code).remove();
             signs.remove(code);
             ok = true;
+            if(wrongSigns.containsKey(code) == true ){
+                wrongSigns.remove(code);
+                wrongSignsSpeedLimit.remove(wrongSigns.get(code));
+            }
+            if(wrongSigns.containsKey(code) == true ){
+                innSigns.remove(code);
+                innSignsSpeedLimit.remove(innSigns.get(code));
+            }            
         }else{
             JOptionPane.showMessageDialog(null, "No existe la señal"); //si no existe la señal a eliminar mandara el mensaje
             ok = false;            
@@ -283,28 +306,21 @@ public class ICPC{
      * @return retorna una matriz de String en la que cada array contiene la clave de la señal erronea y la velocidad escrita en esta
      */
     public String[][] wrongSigns(){
-        String [] señales = signs.keySet().toArray(new String[0]);
-        Integer[] speedsint = signsSpeedLimit.values().toArray(new Integer[0]);
-        String[] speedstring = new String[speedsint.length];
-        int a = 0;
-        for(int i = 0 ; i < signs.size();i ++){
-            if(signs.get(señales[i]).color != "magenta"){
-                a = +1;
+        String[][] wsignsreturn = new String[wrongSigns.size()][2];
+        String [] wseñales = wrongSigns.keySet().toArray(new String[0]);
+        Integer[] wspeedsint = wrongSignsSpeedLimit.values().toArray(new Integer[0]);
+        String[] wspeedstring = new String[wspeedsint.length];
+        for (int i = 0; i < wspeedsint.length; i++) {
+            wspeedstring[i] = String.valueOf(wspeedsint[i]);
+            Arrays.sort(wseñales);
+        }
+        for(int i = 0; i < wrongSigns.size(); i ++){
+            wsignsreturn[i][0] = wseñales[i];
+            if(wrongSigns.containsKey(wseñales[i]) == true){
+                wsignsreturn[i][1] = String.valueOf(wrongSignsSpeedLimit.get(wseñales[i]));    
             }
-        }
-        String [][] wsignsreturn = new String[signs.size()-a][2];        
-        for(int i = 0; i < signs.size(); i ++){
-            speedstring[i] = String.valueOf(speedsint[i]);
-            Arrays.sort(señales);
-        }
-        for(int i = 0; i < signs.size(); i++){
-            if(signs.get(señales[i]).color == "magenta"){
-                wsignsreturn[i][0] = señales[i];
-                if(signs.containsKey(señales[i]) == true){
-                    wsignsreturn[i][1] = String.valueOf(signsSpeedLimit.get(señales[i]));    
-                }
-            }
-        }
+        }        
+        ok = true;
         return wsignsreturn;
     }
     /**
@@ -312,29 +328,22 @@ public class ICPC{
      * @return retorna una matriz de String en la que cada array contiene la clave de la señal innecesaria y la velocidad escrita en esta
      */
     public String[][] unNecessarySigns(){
-        String [] señales = signs.keySet().toArray(new String[0]);
-        Integer[] speedsint = signsSpeedLimit.values().toArray(new Integer[0]);
-        String[] speedstring = new String[speedsint.length];
-        int a = 0;
-        for(int i = 0 ; i < signs.size();i ++){
-            if(signs.get(señales[i]).color != "green"){
-                a = +1;
+        String[][] isignsreturn = new String[innSigns.size()][2];
+        String [] iseñales = innSigns.keySet().toArray(new String[0]);
+        Integer[] ispeedsint = innSignsSpeedLimit.values().toArray(new Integer[0]);
+        String[] ispeedstring = new String[ispeedsint.length];
+        for (int i = 0; i < ispeedsint.length; i++) {
+            ispeedstring[i] = String.valueOf(ispeedsint[i]);
+            Arrays.sort(iseñales);
+        }
+        for(int i = 0; i < innSigns.size(); i ++){
+            isignsreturn[i][0] = iseñales[i];
+            if(signs.containsKey(iseñales[i]) == true){
+                isignsreturn[i][1] = String.valueOf(innSignsSpeedLimit.get(iseñales[i]));    
             }
-        }
-        String [][] usignsreturn = new String[signs.size()-a][2];        
-        for(int i = 0; i < signs.size(); i ++){
-            speedstring[i] = String.valueOf(speedsint[i]);
-            Arrays.sort(señales);
-        }
-        for(int i = 0; i < signs.size(); i++){
-            if(signs.get(señales[i]).color == "green"){
-                usignsreturn[i][0] = señales[i];
-                if(signs.containsKey(señales[i]) == true){
-                    usignsreturn[i][1] = String.valueOf(signsSpeedLimit.get(señales[i]));    
-                }
-            }
-        }
-        return usignsreturn;
+        }        
+        ok = true;
+        return isignsreturn;
     }
     /**
      * Metodo que calcula el costo total de implementar señales
@@ -342,8 +351,8 @@ public class ICPC{
      */
     public int totalSignsCost(){
         int totalCost = 0;
-        for (String s : signs.keySet()){
-            if(s != "green" && s !="magenta"){
+        for (Sign s : signs.values()){
+            if(s.color != "green" && s.color !="magenta"){
                 totalCost += costoSeñales;
             }
         }
@@ -355,6 +364,7 @@ public class ICPC{
     public void makeInvisible(){
         if(isVisible == false){
             ok = false;
+            JOptionPane.showMessageDialog(null, "el simulador ya es invisible"); //si el simulador ya es invisible manda el mensaje
         }else{
             for(Route r : routes.values()){
                 r.makeInvisible();
@@ -375,6 +385,7 @@ public class ICPC{
     public void makeVisible(){
         if(isVisible == true){
             ok = false;
+            JOptionPane.showMessageDialog(null, "el simulador ya es visible"); //si el simulador ya es visible manda el mensaje
         }else{
             for(Route r : routes.values()){
                 r.makeVisible();

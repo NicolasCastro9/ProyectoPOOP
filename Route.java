@@ -1,11 +1,5 @@
-import javax.swing.*;
-import java.awt.*;
+
 import java.util.*;
-import java.util.*;
-import java.awt.geom.*;
-import java.util.stream.IntStream;
-import java.util.ArrayList;
-import java.util.Collections; 
 /**
  * Clase que crea la ruta
  * 
@@ -14,7 +8,8 @@ import java.util.Collections;
  */
 public class Route
 {
-    private Lineas ruta;
+    private Lineas ruta = new Lineas();
+    public String color;
     public String colorInicio;
     public int posicionInicioX;
     public int posicionInicioY;
@@ -28,45 +23,35 @@ public class Route
      */
     public Route (String locationA, int x1, int y1, String locationB, int x2, int y2)
     {
+        this.colorInicio = locationA;
+        this.colorFinal = locationB;
+        this.posicionInicioX = x1;
+        this.posicionInicioY = y1;
+        this.posicionFinalX = x1;
+        this.posicionFinalY = y1;
         intersecciones = new Intersection[2];
-        colorInicio = locationA;
-        posicionInicioX = x1;
-        posicionInicioY = y1;
-        colorFinal = locationB;
-        posicionFinalX = x2;
-        posicionFinalY = y2;
+        intersecciones[0] = new Intersection(locationA,x1,y1);
+        intersecciones[1] = new Intersection(locationB,x2,y2);
+        ruta.changePosition(intersecciones[0].x+25,intersecciones[0].y+25,intersecciones[1].x+25,intersecciones[1].y+25);
         isVisible = false;
-    }
-    /**
-     * Metodo que dibuja la ruta en el canvas
-     */
-    private void drawRoute(){
-        if(isVisible){
-            intersecciones[0] = new Intersection(colorInicio,posicionInicioX,posicionInicioY);
-            intersecciones[1] = new Intersection(colorFinal,posicionFinalX,posicionFinalY);                   
-            ruta = new Lineas();
-            ruta.changePosition(intersecciones[0].x+25,intersecciones[0].y+25,intersecciones[1].x+25,intersecciones[1].y+25);
-            ruta.makeVisible();
-        }
-    }
-    /**
-     * Metodo que borra la ruta en el canvas
-     */
-    private void removeRoute(){
-        ruta.erase();
     }
     /**
      * Metodo que hace visible a la ruta
      */
     public void makeVisible(){
-        isVisible = true;
-        drawRoute();
+        ruta.makeVisible();
     }
     /**
      * Metodo que hace invisible a la ruta
      */
     public void makeInvisible(){
-        removeRoute();
-        isVisible = false;
+        ruta.makeInvisible();
+    }
+    public void removeRoute(){
+        ruta.erase();
+    }
+    public void changeColor(String newColor){
+        ruta.changeColor(newColor);
+        color = newColor;
     }
 }

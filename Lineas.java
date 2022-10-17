@@ -67,4 +67,8 @@ public class Lineas
         y2 = ny2;
         draw();
     }
+        public void changeColor(String newColor){
+        color = newColor;
+        draw();
+    }
 }
