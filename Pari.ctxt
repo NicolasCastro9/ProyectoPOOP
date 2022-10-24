@@ -1,0 +1,7 @@
+#BlueJ class context
+comment0.target=Pari
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Pari\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=locationA\ x1\ y1\ locationB\ x2\ y2\ speedlimit1
+comment1.target=Pari(java.lang.String,\ int,\ int,\ java.lang.String,\ int,\ int,\ int)
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Pari,\ se\u00F1al\ que\ se\ crea\ dependiendo\ si\ su\ velocidad\ es\ par(es\ rosado\ y\ duplica\ su\ tama\u00F1o),\ o\ impar(es\ naranja\ y\ mantiene\ su\ tama\u00F1o\ estandar\r\n\ @param\ locationA\ es\ el\ color\ de\ la\ interseccion\ que\ inicia\ la\ ruta\r\n\ @param\ x1\ posicion\ en\ x\ de\ la\ interseccion\ inicio\r\n\ @param\ y1\ posicion\ en\ y\ de\ la\ interseccion\ inicio\r\n\ @param\ locationB\ es\ el\ color\ de\ la\ interseccion\ que\ finaliza\ la\ ruta\r\n\ @param\ x2\ posicion\ en\ x\ de\ la\ interseccion\ final\r\n\ @param\ y2\ posicion\ en\ y\ de\ la\ interseccion\ final\r\n\ @param\ speedlimit1\ es\ la\ velocidad\ en\ la\ se\u00F1al\r\n
+numComments=2

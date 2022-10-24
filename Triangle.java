@@ -11,8 +11,8 @@ public class Triangle{
     
     public static int VERTICES=3;
     
-    private int height;
-    private int width;
+    public int height;
+    public int width;
     private int xPosition;
     private int yPosition;
     private String color;

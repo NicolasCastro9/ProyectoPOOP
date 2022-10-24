@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.target=Cautious
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Cautious\ here.\r\n\ \r\n\ @author\ (Nicol\u00E1s\ Castro\ Jaramillo\ y\ Marco\ Antonio\ Alvarez)\ \r\n\ @version\ \ 2.0\ (29/09/2022)\r\n
+comment1.params=locationA\ x1\ y1\ locationB\ x2\ y2\ speedlimit1
+comment1.target=Cautious(java.lang.String,\ int,\ int,\ java.lang.String,\ int,\ int,\ int)
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Cautious,\ crea\ una\ se\u00F1al\ que\ se\ ajusta\ a\ la\ velocidad\ minima\ de\ la\ ciudad\r\n\ @param\ locationA\ es\ el\ color\ de\ la\ interseccion\ que\ inicia\ la\ ruta\r\n\ @param\ x1\ posicion\ en\ x\ de\ la\ interseccion\ inicio\r\n\ @param\ y1\ posicion\ en\ y\ de\ la\ interseccion\ inicio\r\n\ @param\ locationB\ es\ el\ color\ de\ la\ interseccion\ que\ finaliza\ la\ ruta\r\n\ @param\ x2\ posicion\ en\ x\ de\ la\ interseccion\ final\r\n\ @param\ y2\ posicion\ en\ y\ de\ la\ interseccion\ final\r\n\ @param\ speedlimit1\ es\ la\ velocidad\ en\ la\ se\u00F1al\r\n
+comment2.params=r
+comment2.target=void\ minRutas(int)
+comment2.text=\r\n\ metodo\ que\ define\ el\ limite\ de\ velocidad\ de\ la\ se\u00F1al\ como\ el\ minimo\r\n
+numComments=3

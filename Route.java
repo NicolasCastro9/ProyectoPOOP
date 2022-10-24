@@ -8,7 +8,7 @@ import java.util.*;
  */
 public class Route
 {
-    private Lineas ruta = new Lineas();
+    public Lineas ruta = new Lineas();
     public String color;
     public String colorInicio;
     public int posicionInicioX;
@@ -20,6 +20,12 @@ public class Route
     private boolean isVisible;
     /**
      * Constructor for objects of class Road
+     * @param locationA es el color de la interseccion que inicia la ruta
+     * @param x1 posicion en x de la interseccion inicio
+     * @param y1 posicion en y de la interseccion inicio
+     * @param locationB es el color de la interseccion que finaliza la ruta
+     * @param x2 posicion en x de la interseccion final
+     * @param y2 posicion en y de la interseccion final
      */
     public Route (String locationA, int x1, int y1, String locationB, int x2, int y2)
     {
@@ -47,11 +53,31 @@ public class Route
     public void makeInvisible(){
         ruta.makeInvisible();
     }
+    /**
+     *  Metodo que remueve la ruta
+     */
     public void removeRoute(){
         ruta.erase();
     }
+    /**
+     * metodo que cambia el color de la ruta
+     * @param newColor es el nuevo color de la ruta
+     */
     public void changeColor(String newColor){
         ruta.changeColor(newColor);
         color = newColor;
+    }
+    /**
+     * Metodo que verifica si una ruta admite señales
+     * @return retorna si la ruta admite señales
+     */
+    public boolean ponerSeñales(){
+        return true;
+    }
+    /**
+     * Metodo que verifica si una ruta se puede eliminar
+     */
+    public boolean quitarRuta(){
+        return true;
     }
 }

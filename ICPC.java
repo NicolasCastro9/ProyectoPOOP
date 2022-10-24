@@ -9,28 +9,31 @@ import javax.swing.JOptionPane;
  * Clase que crea el ICPC
  * 
  * @author (Nicolás Castro Jaramillo y Marco Antonio Alvarez) 
- * @version  3.0 (27/09/2022)
+ * @version  4.0 (22/10/2022)
  */
 public class ICPC{
     private Canvas canvas;
     private int length;
     private int width;
-    private boolean ok;
+    private static boolean ok;
     private boolean isVisible;
     public HashMap <String,Intersection> intersections; //Hashmap con las intersecciones
     public HashMap <String,Route> routes; //Hashmap con las rutas
     public HashMap <String,Sign> signs; //Hashmap con las señales
     public HashMap <String,Integer> signsSpeedLimit; // Hashmap con las velocidades de las señales
     public HashMap <Integer,String> colores; //Hashmap de los colores de las intersecciones
-    public HashMap <String,Integer> routesSpeedLimit; //Hashmap de las velocidades que tienen las rutas
-    public HashMap <String,Sign> wrongSigns;
-    public HashMap <String,Integer> wrongSignsSpeedLimit;
-    public HashMap <String,Sign> innSigns;
-    public HashMap <String,Integer> innSignsSpeedLimit;
+    public HashMap  <String,Integer> routesSpeedLimit; //Hashmap de las velocidades que tienen las rutas
+    public HashMap <String,Sign> wrongSigns; //Hashmap que contiene las señales erroneas
+    public HashMap <String,Integer> wrongSignsSpeedLimit; //Hashmap que contiene los las velocidades de las señales erroneas
+    public HashMap <String,Sign> innSigns;//Hashmap que contiene las señales innecesarias
+    public HashMap <String,Integer> innSignsSpeedLimit; //Hashmap que contiene los las velocidades de las señales innecesarias
+    public static String[][] routesA; //matriz auxiliar
     public int[][] mRoutesSpeedLimit; //matriz del ejercicio
-    public int costoSeñales;
+    public int costoSeñales; //Costo total de las señales
     /**
      * Constructor for objects of class ICPC
+     * @param length es la longitud del canvas
+     * @param width es el ancho del canvas
      */
     public ICPC(int length, int width)
     {
@@ -50,12 +53,15 @@ public class ICPC{
             innSigns = new HashMap<String,Sign>();
             innSignsSpeedLimit = new HashMap <String,Integer>();
             mRoutesSpeedLimit = new int [3][];
-            ok = true;
+            ok = false;
             isVisible = false;            
         }
     }
     /**
      * Constructor para la clase ICPC que acepta el costo de las señales
+     * @param length es la longitud del canvas
+     * @param width es el ancho del canvas 
+     * @param cost es el costo de cada señal
      */
     public ICPC(int length, int width, int cost){
         this(length,width);
@@ -63,6 +69,8 @@ public class ICPC{
     }
     /**
      * Constructor para la clase ICPC que acepta una matriz de valores
+     * @param cost es el costo de cada señal
+     * @param routespeedLimits es la matriz a ingresar
      */
     public ICPC(int cost, int[][] routespeedLimits){
         this(700,700);
@@ -110,6 +118,36 @@ public class ICPC{
         }
     }
     /**
+     * Metodo que crea un objeto de la clase Intersection.
+     * @param type es el tipo de interseccion
+     * @param color  es el color con el cual se identificara a la intersección.
+     * @param x  es la posicion en el eje x de la intersección.
+     * @param y  es la posicion en el eje y de la intersección.
+     */
+    public void addIntersection(String type,String color, int x, int y){
+        if(intersections.containsKey(color) == true){
+            JOptionPane.showMessageDialog(null, "color ya existe"); //si ya existe una interseccion con el color mandara el mensaje
+            ok = false;
+        }else{
+            switch(type){
+                case "hermit":
+                    Hermit hermit = new Hermit(color,x,y);
+                    intersections.put(color,hermit);
+                    ok = true;
+                    break;
+                case "needy":
+                    Needy needy = new Needy(color,x,y);
+                    intersections.put(color,needy);
+                    ok = true;
+                    break;
+                case "normal":
+                    addIntersection(color,x,y);
+                    ok = true;
+                    break;
+            }
+        }
+    }
+    /**
      * Metodo que crea un objeto de la clase Route.
      * @param interA  es la intersección donde empieza la ruta.
      * @param interB  es la interseccioón donde termina la ruta.
@@ -123,10 +161,50 @@ public class ICPC{
             JOptionPane.showMessageDialog(null, "no se puede generar ruta"); //no se puede generar ruta donde las dos intersecciones es el mismo
             ok = false;
         }else{
-            if(intersections.containsKey(interA) == true && intersections.containsKey(interB) == true){
+            if(intersections.containsKey(interA) == true && intersections.containsKey(interB) == true && intersections.get(interA).permiteRutas(routes()) == true && intersections.get(interB).permiteRutas(routes())){
                 Route route = new Route (intersections.get(interA).color,intersections.get(interA).x,intersections.get(interA).y,intersections.get(interB).color,intersections.get(interB).x,intersections.get(interB).y);
                 routes.put(keyRoad,route);
                 ok = true;
+            }else{
+                JOptionPane.showMessageDialog(null, "No se puede formar la ruta");//si no existe una de las intersecciones mandara el mensaje
+                ok = false;
+            }
+        }
+    }
+    /**
+     * Metodo que crea un objeto de la clase Route.
+     * @param type, es el tipo de ruta
+     * @param interA  es la intersección donde empieza la ruta.
+     * @param interB  es la interseccioón donde termina la ruta.
+     */
+    public void addRoad(String type,String interA, String interB){
+        String keyRoad = interA + " " + interB; 
+        if(routes.containsKey(keyRoad) == true){
+            JOptionPane.showMessageDialog(null, "ruta ya existe"); //si ya existe una ruta con el color mandara el mensaje
+            ok = false;            
+        }else if(interA == interB){
+            JOptionPane.showMessageDialog(null, "no se puede generar ruta"); //no se puede generar ruta donde las dos intersecciones es el mismo
+            ok = false;
+        }else{
+            if(intersections.containsKey(interA) == true && intersections.containsKey(interB) == true && intersections.get(interA).permiteRutas(routes()) == true && intersections.get(interB).permiteRutas(routes())){
+               switch(type){
+                    case "rebel":
+                        Rebel rebel = new Rebel (intersections.get(interA).color,intersections.get(interA).x,intersections.get(interA).y,intersections.get(interB).color,intersections.get(interB).x,intersections.get(interB).y);
+                        routes.put(keyRoad,rebel);
+                        routeSpeedLimit(interA,interB,10);
+                        ok = true;
+                        break;
+                    case "fixed":
+                        Fixed fixed = new Fixed (intersections.get(interA).color,intersections.get(interA).x,intersections.get(interA).y,intersections.get(interB).color,intersections.get(interB).x,intersections.get(interB).y);
+                        routes.put(keyRoad,fixed);
+                        routeSpeedLimit(interA,interB,10);
+                        ok = true;
+                        break;
+                    case "normal":
+                        addRoad(interA,interB);
+                        ok = true;
+                        break;
+                } 
             }else{
                 JOptionPane.showMessageDialog(null, "No se puede formar la ruta");//si no existe una de las intersecciones mandara el mensaje
                 ok = false;
@@ -161,7 +239,7 @@ public class ICPC{
             JOptionPane.showMessageDialog(null, "señal ya existe"); //si ya existe una señal con el color mandara el mensaje
             ok = false;            
         }else{
-            if(routes.containsKey(keyRoad) == true){
+            if(routes.containsKey(keyRoad) == true && routes.get(keyRoad).ponerSeñales() == true && routesSpeedLimit.containsKey(keyRoad)){
                 Sign sign = new Sign(intersections.get(interA).color,intersections.get(interA).x,intersections.get(interA).y,intersections.get(interB).color,intersections.get(interB).x,intersections.get(interB).y,speedlimit);
                 sign.changeColorRange(speedlimit); //la señal cambiara en un tono de grises dependiendo del valor
                 signs.put(keyRoad,sign);
@@ -179,6 +257,54 @@ public class ICPC{
                     }
                 }
                 ok = true;
+            }else{
+                JOptionPane.showMessageDialog(null, "No se puede poner la señal"); //si no existe la ruta mandara el mensaje
+                ok = false;
+            }
+        }
+    }
+    /**
+     * Metodo que crea un objeto de la clase Sign.
+     * @param type es el tipo de señal
+     * @param interA  es la intersección donde empieza la ruta.
+     * @param interB  es la interseccioón donde termina la ruta.
+     * @param speedLimit  el limite de velocidad en la señal.
+     */
+    public void putSign(String type,String interA, String interB, int speedlimit){
+        String keyRoad = interA + " " + interB;
+        if(signs.containsKey(keyRoad) == true){
+            JOptionPane.showMessageDialog(null, "señal ya existe"); //si ya existe una señal con el color mandara el mensaje
+            ok = false;            
+        }else{
+            if(routes.containsKey(keyRoad) == true && routes.get(keyRoad).ponerSeñales() == true && routesSpeedLimit.containsKey(keyRoad)){
+                switch(type){
+                    case "twin":
+                        Twin twin = new Twin(intersections.get(interA).color,intersections.get(interA).x,intersections.get(interA).y,intersections.get(interB).color,intersections.get(interB).x,intersections.get(interB).y,speedlimit);
+                        signs.put(keyRoad,twin);
+                        signsSpeedLimit.put(keyRoad,speedlimit);
+                        signs.put(interB + " " + interA, twin.gemelo);
+                        signsSpeedLimit.put(interB + " " + interA,speedlimit);
+                        ok = true;
+                        break;
+                    case "cautious":
+                        Cautious cautious = new Cautious(intersections.get(interA).color,intersections.get(interA).x,intersections.get(interA).y,intersections.get(interB).color,intersections.get(interB).x,intersections.get(interB).y,speedlimit);
+                        int min = Collections.min(routesSpeedLimit.values());
+                        cautious.minRutas(min);
+                        signs.put(keyRoad,cautious);
+                        signsSpeedLimit.put(keyRoad,min);
+                        ok = true;
+                        break;
+                    case "normal":
+                        putSign(interA,interB,speedlimit);
+                        ok = true;
+                        break;
+                    case "pari":
+                        Pari pari = new Pari(intersections.get(interA).color,intersections.get(interA).x,intersections.get(interA).y,intersections.get(interB).color,intersections.get(interB).x,intersections.get(interB).y,speedlimit);
+                        signs.put(keyRoad,pari);
+                        signsSpeedLimit.put(keyRoad,speedlimit);
+                        ok = true;
+                        break;
+                }
             }else{
                 JOptionPane.showMessageDialog(null, "No se puede poner la señal"); //si no existe la ruta mandara el mensaje
                 ok = false;
@@ -214,16 +340,22 @@ public class ICPC{
      */    
     public void delRoad(String locationA, String locationB){
         String code = locationA + " " + locationB;        
-        if(routes.containsKey(code) == true){
+        if(routes.containsKey(code) == true && routes.get(code).quitarRuta() == true){
             if(signs.containsKey(code)){
                 removeSign(locationA,locationB);
             }
             routes.get(code).removeRoute();
             signsSpeedLimit.remove(code);
             routes.remove(code);
+            if(intersections.get(locationA).seAutoelimina(routes()) == true){
+                delIntersection(locationA);
+            }
+            if(intersections.get(locationB).seAutoelimina(routes()) == true){
+                delIntersection(locationB);
+            }
             ok = true;
         }else{
-            JOptionPane.showMessageDialog(null, "No existe la ruta"); //si no existe la ruta a eliminar mandara el mensaje
+            JOptionPane.showMessageDialog(null, "No se puede eliminar la ruta"); //si no existe la ruta a eliminar mandara el mensaje
             ok = false;
         }
     }
@@ -234,7 +366,7 @@ public class ICPC{
      */
     public void removeSign(String interA, String interB){
         String code = interA + " " + interB;
-        if(signs.containsKey(code) == true ){
+        if(signs.containsKey(code) == true && routes.get(code).ponerSeñales() == true){
             signsSpeedLimit.remove(signs.get(code));
             signs.get(code).remove();
             signs.remove(code);
@@ -243,12 +375,17 @@ public class ICPC{
                 wrongSigns.remove(code);
                 wrongSignsSpeedLimit.remove(wrongSigns.get(code));
             }
-            if(wrongSigns.containsKey(code) == true ){
+            if(innSigns.containsKey(code) == true ){
                 innSigns.remove(code);
                 innSignsSpeedLimit.remove(innSigns.get(code));
-            }            
+            }
+            if(signs.containsKey(interB + " " + interA)){
+                signsSpeedLimit.remove(signs.get(interB + " " + interA));
+                signs.get(interB + " " + interA).remove();
+                signs.remove(interB + " " + interA);  
+            }
         }else{
-            JOptionPane.showMessageDialog(null, "No existe la señal"); //si no existe la señal a eliminar mandara el mensaje
+            JOptionPane.showMessageDialog(null, "No se puede realizar la accion"); //si no existe la señal a eliminar mandara el mensaje
             ok = false;            
         }
     }
@@ -256,17 +393,17 @@ public class ICPC{
      * Metodo que devuelve las intersecciones que se encuentran en el canvas
      * @return retorna un array de String de todas las intersecciones en orden alfabetico e identificadas por su color
      */
-    public String[] intesections(){
+    public String[] intersections(){
         String [] intersectionsreturn = intersections.keySet().toArray(new String[0]);
         Arrays.sort(intersectionsreturn);
         ok = true;
         return intersectionsreturn;
     }
-    /**
+    /** 
      * Metodo que devuelve las rutas que se encuentran en el canvas
      * @return retorna una matriz de String en la que cada array contiene  la ruta identificada por su clave y por la velocidad de esta
      */
-    public String[][] routes(){
+    public  String[][] routes(){
         String[][] routesreturn = new String[routes.size()][2];
         String [] rutas = routes.keySet().toArray(new String[0]);        
         Arrays.sort(rutas);
@@ -277,6 +414,7 @@ public class ICPC{
                 routesreturn[i][1] = String.valueOf(routesSpeedLimit.get(rutas[i]));
             }
         }
+        routesA = routesreturn;
         return routesreturn;
     }
     /**
@@ -408,12 +546,13 @@ public class ICPC{
     }
     /**
      * Metodo que devuelve si la ultima operacion se realizo con exito
+     * @return retorna ok si la ultima accion se pudo realizar
      */
     public boolean ok(){
         return ok;
     }
     /**
-     * Metodo privado en el que se le asigna una clave numerica a cada color 
+     * Metodo privado auxiliar en el que se le asigna una clave numerica a cada color 
      */
     private void createColorDictionary(){
         colores.put(1,"red");

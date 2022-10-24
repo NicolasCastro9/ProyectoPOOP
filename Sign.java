@@ -7,20 +7,27 @@
  */
 public class Sign
 {
-    private Triangle signal = new Triangle();
+   public Triangle signal = new Triangle();
     public String color;
     public String colorInicio;
     public String colorFinal;
-    private int posicionInicioX;
-    private int posicionInicioY;
-    private int posicionFinalX;
-    private int posicionFinalY;    
+    public int posicionInicioX;
+    public int posicionInicioY;
+    public int posicionFinalX;
+    public int posicionFinalY;    
     public int speedlimit;
     private boolean isVisible;
     private boolean isWrong;
     private boolean isUnNecessary;
     /**
      * Constructor for objects of class Sign
+     * @param locationA es el color de la interseccion que inicia la ruta
+     * @param x1 posicion en x de la interseccion inicio
+     * @param y1 posicion en y de la interseccion inicio
+     * @param locationB es el color de la interseccion que finaliza la ruta
+     * @param x2 posicion en x de la interseccion final
+     * @param y2 posicion en y de la interseccion final
+     * @param speedlimit1 es la velocidad en la señal
      */
     public Sign(String locationA, int x1, int y1, String locationB, int x2, int y2, int speedlimit1){
         
@@ -53,13 +60,32 @@ public class Sign
     public void makeInvisible(){
         signal.makeInvisible();
     }
+    /**
+     * Metodo que cambia el color de la señal
+     * @param newColor es el nuevo color
+     */
     public void changeColor(String newColor){
         signal.changeColor(newColor);
         color = newColor;
     }
+    /**
+     * Metodo que cambia el tamaño de la señal
+     * @param newHeigth es la nueva longitud de la señal
+     * @param newWidth es el nuevo ancho de la señal
+     */
+    public void changeSize(int newHeight, int newWidth){
+        signal.changeSize(newHeight, newWidth);
+    }
+    /**
+     * Metodo que remueve a la señal
+     */
     public void remove(){
         signal.erase();
     }
+    /**
+     * Metodo que cambia el color de una señal normal dependiendo de su velocidad
+     * @param speedlimit es el limite de velocidad de la seña
+     */
     public void changeColorRange(int speedlimit){
         if(speedlimit >= 0 && speedlimit < 5){
             signal.changeColor("light_gray");
@@ -74,5 +100,11 @@ public class Sign
             signal.changeColor("black");
             color = "black";
         }        
+    }
+    /**
+     * Metodo que verifica si a la ruta se le puede cambiar el valor del limite de la velocidad una vez creada
+     */
+    public boolean changeRouteSpeedValue(){
+        return false;
     }
 }
